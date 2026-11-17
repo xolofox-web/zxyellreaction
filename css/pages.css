@@ -1,0 +1,14 @@
+/* Home */
+.home-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media (min-width: 900px) { .home-grid { grid-template-columns: 1fr 340px; } }
+
+/* Analytics */
+.analytics-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media (min-width: 900px) { .analytics-grid { grid-template-columns: 1.4fr 1fr; } }
+
+/* Overview */
+.overview-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media (min-width: 900px) { .overview-grid { grid-template-columns: 1.5fr 1fr; } }
+
+/* Login */
+.login-card { max-width: 400px; margin: 40px auto; }
