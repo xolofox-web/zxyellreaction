@@ -1,5 +1,4 @@
 import { state } from '../state.js';
-import { API_BASE, API_KEY } from '../config.js';
 import { fmtDate, esc, $, toast } from '../utils.js';
 import { I } from '../icons.js';
 
@@ -7,11 +6,12 @@ export function renderApiMonitor() {
   const total = state.apiLogs.length;
   const ok = state.apiLogs.filter(l => l.status === 'success').length;
   const fail = total - ok;
-  const avg = total
-    ? Math.round(state.apiLogs.reduce((a, b) => a + (b.response_time_ms || 0), 0) / total)
-    : 0;
+  const avg = total ? Math.round(state.apiLogs.reduce((a, b) => a + (b.response_time_ms || 0), 0) / total) : 0;
   const healthy = fail <= ok;
   const successRate = total ? Math.round((ok / total) * 100) : 0;
+
+  // Endpoint sekarang dipegang oleh Backend Vercel (/api/reaction)
+  const API_ENDPOINT = 'Internal Vercel Serverless (/api/reaction)';
 
   return `
     <div class="stats mb-6">
@@ -35,17 +35,12 @@ export function renderApiMonitor() {
 
     <div class="card mb-5">
       <div class="card-header">
-        <div class="h3">Konfigurasi endpoint</div>
-        <button class="btn btn-ghost btn-sm" onclick="window.testApiEndpoint()">${I.zap} Test</button>
+        <div class="h3">Konfigurasi Endpoint</div>
       </div>
       <div style="padding:8px 0;">
         <div class="row-between" style="padding:12px 20px;border-bottom:1px solid var(--border);font-size:13px;gap:12px;">
           <span class="muted" style="flex-shrink:0;">Endpoint</span>
-          <code style="font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(API_BASE)}</code>
-        </div>
-        <div class="row-between" style="padding:12px 20px;border-bottom:1px solid var(--border);font-size:13px;">
-          <span class="muted">API Key</span>
-          <code style="font-size:11.5px;">${API_KEY.slice(0, 4)}…${API_KEY.slice(-3)}</code>
+          <code style="font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(API_ENDPOINT)}</code>
         </div>
         <div class="row-between" style="padding:12px 20px;border-bottom:1px solid var(--border);font-size:13px;">
           <span class="muted">Success rate</span>
@@ -80,22 +75,3 @@ export function renderApiMonitor() {
         </div>`}
   `;
 }
-
-window.testApiEndpoint = async () => {
-  toast('Menguji endpoint…', 'info');
-  const start = performance.now();
-  try {
-    const res = await fetch(
-      `${API_BASE}?apikey=${encodeURIComponent(API_KEY)}`,
-      { method: 'GET' }
-    );
-    const ms = Math.round(performance.now() - start);
-    if (res.status >= 200 && res.status < 500) {
-      toast(`Endpoint merespons dalam ${ms}ms (HTTP ${res.status}).`, 'success');
-    } else {
-      toast(`Endpoint error (HTTP ${res.status}).`, 'error');
-    }
-  } catch (err) {
-    toast(`Gagal konek: ${err.message} (kemungkinan CORS).`, 'error');
-  }
-};
