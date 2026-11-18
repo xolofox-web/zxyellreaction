@@ -3,7 +3,8 @@ import { publicShell } from '../components/shell.js';
 import { fmtDate } from '../utils.js';
 
 export function renderAnalytics() {
-  const reqs = state.requests.filter(r => r.user_id === state.userId);
+  // PERUBAHAN: Gunakan device_id
+  const reqs = state.requests.filter(r => r.device_id === state.userId);
   const total = reqs.length;
   const success = reqs.filter(r => r.status === 'success').length;
   const failed = reqs.filter(r => r.status === 'failed').length;
@@ -13,11 +14,9 @@ export function renderAnalytics() {
 
   const days = [];
   for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    d.setHours(0, 0, 0, 0);
+    const d = new Date(); d.setDate(d.getDate() - i); d.setHours(0, 0, 0, 0);
     const end = d.getTime() + 86400000;
-    const count = reqs.filter(r => r.created_at >= d.getTime() && r.created_at < end).length;
+    const count = reqs.filter(r => new Date(r.created_at).getTime() >= d.getTime() && new Date(r.created_at).getTime() < end).length;
     days.push({ label: d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' }), count });
   }
   const maxCount = Math.max(1, ...days.map(d => d.count));
