@@ -2,7 +2,7 @@ import { state } from '../state.js';
 import { publicShell } from '../components/shell.js';
 import { fmtDate, esc, $, shortId } from '../utils.js';
 import { I } from '../icons.js';
-import '../export.js'; // register window.exportUserCSV
+import '../export.js';
 
 export function renderHistory() {
   const content = `
@@ -26,6 +26,7 @@ export function renderHistory() {
   `;
   publicShell(content);
   updateHistoryTable();
+  
   $('#h-status')?.addEventListener('change', (e) => {
     state.historyFilter.status = e.target.value;
     state.historyFilter.page = 1;
@@ -35,7 +36,9 @@ export function renderHistory() {
 
 function updateHistoryTable() {
   const f = state.historyFilter;
-  let list = state.requests.filter(r => r.user_id === state.userId);
+  // PERUBAHAN: Gunakan device_id, bukan user_id
+  let list = state.requests.filter(r => r.device_id === state.userId);
+  
   if (f.status !== 'all') list = list.filter(r => r.status === f.status);
   const total = list.length;
   const totalPages = Math.max(1, Math.ceil(total / f.pageSize));
@@ -53,7 +56,7 @@ function updateHistoryTable() {
           ${I.inbox}
           <div class="empty-title">Belum ada request</div>
           <div class="empty-text">Request yang Anda kirim akan muncul di sini.</div>
-          <a href="#/home" class="btn btn-secondary mt-4" style="display:inline-flex;">${I.arrowRight} Buat request</a>
+          <a href="/" onclick="event.preventDefault(); window.navigateTo('/')" class="btn btn-secondary mt-4" style="display:inline-flex;">${I.arrowRight} Buat request</a>
         </div>
       </div>`;
     return;
