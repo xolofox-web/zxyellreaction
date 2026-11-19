@@ -10,9 +10,24 @@
   <link rel="stylesheet" href="/css/main.css" />
 </head>
 <body>
-  <div id="app"></div>
+  <div id="app">Memuat...</div>
   <div id="toast-wrap" class="toast-wrap"></div>
 
-  <script type="module" src="/js/app.js"></script>
+  <script>
+    // PENANGKAP ERROR: Jika ada file JS yang gagal dimuat, tampilkan di layar
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        await import('/js/app.js');
+      } catch (err) {
+        document.getElementById('app').innerHTML = `
+          <div style="padding:20px; font-family:sans-serif; background:#fee; color:#900; border:2px solid red; margin:20px; border-radius:8px;">
+            <h3>⚠️ Gagal Memuat Website</h3>
+            <p><b>Pesan Error:</b> ${err.message}</p>
+            <p style="font-size:12px; word-break:break-all;">${err.stack || ''}</p>
+          </div>
+        `;
+      }
+    });
+  </script>
 </body>
 </html>
