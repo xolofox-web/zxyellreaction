@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     const apiUrl = `https://apikayz.my.id/tools/rch?apikey=${API_KEY}&url=${encodeURIComponent(url)}&emoji=${encodeURIComponent(emojis)}`;
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000); 
+    const timeoutId = setTimeout(() => controller.abort(), 8500); 
 
     const apiRes = await fetch(apiUrl, {
       method: 'GET',
