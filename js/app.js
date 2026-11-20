@@ -61,43 +61,68 @@ initState();
 let countdownInterval = null;
 
 // ============================================================================
-// 4. ROUTING (DENGAN DYNAMIC IMPORT AGAR LEBIH AMAN)
+// 4. ROUTING (DIPERBAIKI: LOGIN & ADMIN DIPISAH)
 // ============================================================================
 async function renderPage() {
   const path = window.location.pathname;
   
   if (countdownInterval) clearInterval(countdownInterval);
 
+  // Cek Sesi Admin
   if (sessionStorage.getItem('wacr_admin') === 'true') {
     state.isAdmin = true;
   }
 
-  // Rute Login & Admin
-  if (path === '/login' || path.startsWith('/admin')) {
-    if (!state.isAdmin) {
-      try {
-        // Dynamic Import untuk Login
-        const { renderAdminLogin, attachLoginHandlers } = await import('./pages/login.js');
-        document.body.innerHTML = renderAdminLogin();
-        attachLoginHandlers();
-      } catch (e) {
-        console.error("Gagal memuat halaman login:", e);
-        document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:50px;'>Gagal memuat halaman login.</h1>";
-      }
-    } else {
-      try {
-        // Dynamic Import untuk Dashboard Admin
-        const { renderAdmin } = await import('./admin/dashboard.js');
-        renderAdmin();
-      } catch (e) {
-        console.error("Gagal memuat dashboard:", e);
-        document.body.innerHTML = "<h1 style='color:white;text-align:center;margin-top:50px;'>Gagal memuat dashboard.</h1>";
-      }
+  // --- RUTE LOGIN (Murni untuk Login) ---
+  if (path === '/login') {
+    // Jika sudah login tapi buka /login, lempar ke /admin
+    if (state.isAdmin) {
+      window.history.replaceState({}, '', '/admin');
+      renderPage();
+      return;
+    }
+
+    try {
+      const { renderAdminLogin, attachLoginHandlers } = await import('./pages/login.js');
+      // Gunakan #app agar tidak menghapus toast-wrap atau loader
+      const appEl = document.getElementById('app') || document.body;
+      appEl.innerHTML = renderAdminLogin();
+      attachLoginHandlers();
+    } catch (e) {
+      console.error("Gagal memuat halaman login:", e);
+      document.getElementById('app').innerHTML = `<div style="text-align:center; padding:50px; color:white;"><h1>Gagal memuat halaman login.</h1><p style="color:red;">${e.message}</p></div>`;
     }
     return;
   }
 
-  // Rute Publik
+  // --- RUTE ADMIN (Murni untuk Dashboard) ---
+  if (path.startsWith('/admin')) {
+    // Jika belum login, tendang ke /login
+    if (!state.isAdmin) {
+      window.history.replaceState({}, '', '/login');
+      renderPage();
+      return;
+    }
+
+    try {
+      const { renderAdmin } = await import('./admin/dashboard.js');
+      await renderAdmin(); // WAJIB pakai await agar error tertangkap
+    } catch (e) {
+      console.error("Gagal memuat dashboard:", e);
+      // Tampilkan pesan error asli ke layar agar Anda tahu file mana yang hilang
+      document.getElementById('app').innerHTML = `
+        <div style="text-align:left; padding: 20px; color: #fff; background: #18181b; min-height: 100vh; font-family: monospace;">
+          <h2 style="color: #ef4444; margin-bottom: 10px;">Gagal memuat Dashboard</h2>
+          <p style="color: #a1a1aa; margin-bottom: 5px;">Penyebab error:</p>
+          <pre style="background: #000; padding: 15px; border-radius: 8px; overflow-x: auto; color: #ef4444; border: 1px solid #ef4444;">${e.message}</pre>
+          <p style="color: #a1a1aa; margin-top: 20px; font-size: 13px;">Buka Console Browser (F12) untuk detail lebih lanjut, atau pastikan semua file di dalam folder /admin sudah lengkap (terutama config.js).</p>
+        </div>
+      `;
+    }
+    return;
+  }
+
+  // --- RUTE PUBLIK (Home, History, Analytics) ---
   if (path === '/history') {
     renderHistory();
   } else if (path === '/analytics') {
