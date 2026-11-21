@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- FIX: Mengubah Judul Menjadi Zreact -->
+  <title>Zreact · Channel Reaction Tool</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/main.css" />
+  
+  <!-- FIX: Blok <style> yang memaksa body hitam sudah dihapus -->
+</head>
+<body>
+  <div id="app"></div>
+  <div id="toast-wrap" class="toast-wrap"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Coba muat aplikasi
+        await import('/js/app.js');
+      } catch (err) {
+        // Jika gagal karena cache usang (Stale Chunk) atau file berubah
+        if (err.message.includes('Failed to fetch dynamically imported module')) {
+          const hasReloaded = sessionStorage.getItem('has_reloaded_js');
+          
+          if (!hasReloaded) {
+            // Set flag agar tidak reload terus menerus (infinite loop)
+            sessionStorage.setItem('has_reloaded_js', 'true');
+            // Paksa reload halaman dengan melewati cache
+            window.location.reload(true); 
+          } else {
+            // Jika sudah reload tapi tetap gagal, tampilkan error
+            document.getElementById('app').innerHTML = `
+              <div style="padding:20px; font-family:sans-serif; background:#fee; color:#900; border:2px solid red; margin:20px; border-radius:8px;">
+                <h3>⚠️ Gagal Memuat Website</h3>
+                <p><b>Pesan Error:</b> ${err.message}</p>
+                <p>Silakan bersihkan cache browser Anda (Ctrl+Shift+R) atau hubungi admin.</p>
+                <p style="font-size:12px; word-break:break-all; opacity:0.7;">${err.stack || ''}</p>
+              </div>
+            `;
+          }
+        } else {
+          // Error lain (bukan masalah fetch module)
+          document.getElementById('app').innerHTML = `<div style="color:red; padding:20px;">Error: ${err.message}</div>`;
+        }
+      }
+    });
+  </script>
+</body>
+</html>
