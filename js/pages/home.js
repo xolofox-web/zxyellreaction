@@ -87,7 +87,7 @@ export function renderHome() {
     <!-- ======================================================== -->
     <div class="social-links-container">
       <!-- Telegram -->
-      <a href="https://t.me/username_anda" target="_blank" rel="noopener noreferrer" class="social-btn tg-btn">
+      <a href="https://t.me/Zyxellvar" target="_blank" rel="noopener noreferrer" class="social-btn tg-btn">
         <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"></line>
           <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -96,7 +96,7 @@ export function renderHome() {
       </a>
 
       <!-- Instagram -->
-      <a href="https://instagram.com/username_anda" target="_blank" rel="noopener noreferrer" class="social-btn ig-btn">
+      <a href="https://www.instagram.com/zyxellvar?knvt=cW1iMnZoY2cxa2Ix" target="_blank" rel="noopener noreferrer" class="social-btn ig-btn">
         <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
           <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -106,7 +106,7 @@ export function renderHome() {
       </a>
 
       <!-- TikTok -->
-      <a href="https://tiktok.com/@username_anda" target="_blank" rel="noopener noreferrer" class="social-btn tt-btn">
+      <a href="https://www.tiktok.com/@zyxellvar?_r=1&_t=ZS-9BaWMRpDBb8" target="_blank" rel="noopener noreferrer" class="social-btn tt-btn">
         <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
         </svg>
