@@ -5,6 +5,6 @@
     { "source": "/login", "destination": "/admin.html" },
     { "source": "/history", "destination": "/index.html" },
     { "source": "/analytics", "destination": "/index.html" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|css/|js/|assets/|favicon.ico).*)", "destination": "/index.html" }
   ]
 }
